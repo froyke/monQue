@@ -49,8 +49,8 @@ namespace publisher
 
         public static void Run()
         {
-            IPublish<ExampleMessage> queue = Configuration.GetQueue<ExampleMessage>();
-
+            //IPublish<ExampleMessage> queue = Configuration.GetQueue<ExampleMessage>();
+            var queue = MonQueFactory.Instance.GetMessagesPublisher<ExampleMessage>();
             int i = 0;
 
             while (true)
@@ -65,6 +65,9 @@ namespace publisher
                 if (i == int.MaxValue)
                     i = 0;
             }
+
+           
+
         }
 
         public static void TickTock(object state)
