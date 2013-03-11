@@ -67,12 +67,20 @@ namespace monQue
         {
             Action mainWorkerLoop = () =>
             {
-                var localworker = worker;
                 while (true)
                 {
                     T job = ReceiveAction();
-                    Console.WriteLine("worker Id:{0} , got message", _uniqueWorkerId);
-                    localworker(job);
+                    //Console.WriteLine("worker Id:{0} , got message", _uniqueWorkerId);
+                    try
+                    {
+                        worker(job);
+                        // FUTURE/TODO: Add ack at this point
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error("WorkerQueue: Unhandled exception was thrown by the job. Ex={0}", ex);
+                        // FUTURE/TODO: add errors to the message/ increase Error count
+                    }
                 }
             };
             

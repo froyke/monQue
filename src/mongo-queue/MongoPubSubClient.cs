@@ -42,8 +42,16 @@ namespace monQue
                     while (true)
                     {
                         T msg = ReceiveEvent();
-                        // Distribute event to all subscribers in the process
-                        _listeners.ForEach(  l => l(msg)); // todo: message immutability / cloning. TODO: Error handling (receivers isolation)
+                        // Distribute event to all subscribers in the process. 
+                        // TODO:Consider spawning several tasks.One faulty (blocking) reader might cause starvation 
+                        try
+                        {
+                            _listeners.ForEach(l => l(msg)); // todo: message immutability / cloning. TODO: Error handling (receivers isolation)
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error("PubSubQueue: Unhandled exception was thrown by the listener. Ex={0}", ex);
+                        }
                     }
                 }, TaskCreationOptions.LongRunning); // consider using threads instead.
             }
