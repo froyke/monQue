@@ -16,7 +16,7 @@ namespace monQue
         const int SHORT_SLEEP_INTERVAL = 500; // 0.5 SEC POLL - acts as the minimal polling interval
         const int LONG_SLEEP_INTERVAL = 4000; // 4 SEC POLLING INTERVAL - when we have't seen event for more than a minute
 
-        private static ILog Log = LogManager.GetCurrentClassLogger();
+        private static ILog Log = LogManager.GetLogger("MongoPubSubClinet_" + typeof(T).Name);
 
         private readonly DateTime _started = DateTime.UtcNow;
         private MongoCursorEnumerator<MongoMessage<T>> _enumerator; // our cursor enumerator
@@ -42,6 +42,7 @@ namespace monQue
                     while (true)
                     {
                         T msg = ReceiveEvent();
+                        Log.Debug(string.Format("[ReceiveEvents] Message arrived. publishing to {0} local subscribers. Msg={1}: " ,_listeners.Count,  msg.ToString()));
                         // Distribute event to all subscribers in the process. 
                         // TODO:Consider spawning several tasks.One faulty (blocking) reader might cause starvation 
                         try
@@ -50,7 +51,7 @@ namespace monQue
                         }
                         catch (Exception ex)
                         {
-                            Log.Error("PubSubQueue: Unhandled exception was thrown by the listener. Ex={0}", ex);
+                            Log.Error("PubSubQueue: Unhandled exception was thrown by a listener.", ex);
                         }
                     }
                 }, TaskCreationOptions.LongRunning); // consider using threads instead.

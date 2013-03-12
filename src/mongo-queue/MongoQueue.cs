@@ -11,7 +11,7 @@ namespace monQue
 {
     public class MongoQueue<T> : IPublish<T> where T : class
     {
-        private static ILog Log = LogManager.GetCurrentClassLogger();
+        private static ILog Log = LogManager.GetLogger("MongoQueue_" + typeof(T).Name);
 
 
         private readonly MongoDatabase _database;

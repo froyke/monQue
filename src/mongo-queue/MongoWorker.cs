@@ -14,7 +14,7 @@ namespace monQue
         const int SHORT_SLEEP_INTERVAL = 500; // 0.5 SEC POLL - acts as the minimal polling interval
         const int LONG_SLEEP_INTERVAL = 4000; // 4 SEC POLLING INTERVAL - when we have't seen event for more than a minute
 
-        private static ILog Log = LogManager.GetCurrentClassLogger();
+        private static ILog Log = LogManager.GetLogger("MongoWorker_" + typeof(T).Name);
 
         private int _totalReceived = 0;
         public int TotalReceived { get { return _totalReceived; } }
@@ -78,7 +78,7 @@ namespace monQue
                     }
                     catch (Exception ex)
                     {
-                        Log.Error("WorkerQueue: Unhandled exception was thrown by the job. Ex={0}", ex);
+                        Log.Error("WorkerQueue: Unhandled exception was thrown by the job worker.", ex);
                         // FUTURE/TODO: add errors to the message/ increase Error count
                     }
                 }
