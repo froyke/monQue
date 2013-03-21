@@ -13,7 +13,7 @@ namespace monQue
 {
     class MongoPubSubClient<T> : MongoQueue<T>, ISubscribe<T> where T : class
     {
-        const int SHORT_SLEEP_INTERVAL = 500; // 0.5 SEC POLL - acts as the minimal polling interval
+        const int SHORT_SLEEP_INTERVAL = 1000; // 1 SEC POLL - acts as the minimal polling interval
         const int LONG_SLEEP_INTERVAL = 4000; // 4 SEC POLLING INTERVAL - when we have't seen event for more than a minute
 
         private static ILog Log = LogManager.GetLogger("MongoPubSubClinet_" + typeof(T).Name);
@@ -107,8 +107,9 @@ namespace monQue
 
 
                 }
-                catch
+                catch(Exception ex)
                 {
+                    Log.Warn("[ReceiveEvents inside while true] Got exception. Will reinitialize and continue. Ex={0}", ex);
                     // cursor died or was killed
                     if(_enumerator != null)  
                         _enumerator.Dispose();
