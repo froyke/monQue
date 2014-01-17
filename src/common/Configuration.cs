@@ -10,7 +10,7 @@ namespace common
             var connectionString = ConfigurationManager.ConnectionStrings["mongo-queue"].ConnectionString;
             var queueSize = long.Parse(ConfigurationManager.AppSettings["mongo-queue.size"]);
 
-            return new MongoQueue<T>(connectionString, queueSize);
+            return new MongoQueue<T>(new MongoQueConfig { ConnectionString = connectionString, QueueSize = queueSize });
         }
     }
 }
