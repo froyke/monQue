@@ -50,25 +50,25 @@ namespace monQue
             // TODO: throw if another worker was already registered. ??? (but what about multi processor machines? we might want to run a few workers of the same type...)
             var mongoWorker = new MongoWorker<T>(new MongoQueConfig());
             mongoWorker.RegisterWorker(work);
-        }
-
-      
+        }      
     }
 
     public class MongoQueConfig
     {
         public string ConnectionString    { get; set; }
         public long   QueueSize { get; set; }
-
+        public string Database { get; set; }
         public MongoQueConfig()
         {
             try
             {
                 ConnectionString = ConfigurationManager.ConnectionStrings["mongo-queue"].ConnectionString;
+                Database = ConnectionString.Substring(ConnectionString.LastIndexOf('/'));
             }
             catch
             {
                 ConnectionString = "mongodb://localhost/monQue";
+                Database = "monQue";
             }
             try
             {
@@ -79,7 +79,5 @@ namespace monQue
                 QueueSize = 4194304; // 2 ^ 22; //4MB
             }
         }
-        
-       
     }
 }

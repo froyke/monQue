@@ -25,9 +25,7 @@ namespace subscriber
             t.Start();
 
             bool running = true;
-
             
-
             while (running)
             {
                 ConsoleKeyInfo keypress = Console.ReadKey(true);

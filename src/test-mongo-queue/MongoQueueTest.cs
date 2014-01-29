@@ -6,14 +6,10 @@ using System.Linq;
 using MongoDB.Driver;
 using System.Threading.Tasks;
 using System.Threading;
-
-
 using MongoDB.Bson;
 
 namespace test_mongo_queue
-{
-    
-    
+{  
     /// <summary>
     ///This is a test class for MongoQueueTest and is intended
     ///to contain all MongoQueueTest Unit Tests
@@ -189,10 +185,7 @@ namespace test_mongo_queue
         //    Assert.AreEqual(MESSAGES_COUNT, count);
         //    Assert.AreEqual(MESSAGES_COUNT, lastMsg.IntVal);
         //}
-
-
-
-
+        
         [TestMethod]
         public void PubSubTest_OneProducer_N_consumers_each_should_receive_all_events()
         {
@@ -229,8 +222,7 @@ namespace test_mongo_queue
             test(true); // each consumer represents an isolated process
             test(false);// many consumers in a single process. This should cause only a single connection to the mongodb
         }
-
-
+        
         [TestMethod]
         public void WorkQueueTest_OneProducer_N_consumers_should_shareTheLoad()
         {
@@ -358,8 +350,7 @@ namespace test_mongo_queue
         //    //Assert.IsTrue(finished, "Test did not finish due to timeout. Finished Sofar: " + globalCounter);
         //    Assert.AreEqual(MESSAGES_COUNT * 2, globalCounter);
         //}
-
-
+        
         [TestMethod]
         public void PubSub_N_Producer_M_consumers_each_should_receive_all_events()
         {
@@ -396,13 +387,14 @@ namespace test_mongo_queue
             Thread.Sleep(MAX_TEST_TIME_MS);
             Assert.AreEqual(MESSAGES_COUNT * CONSUMERS_COUNT * PRODUCERS_COUNT, globalCounter);
         }
-
-
-
+        
         private void DropCollection(string name)
         {
             var connectionString = ConfigurationManager.ConnectionStrings["mongo-queue"].ConnectionString;
-            var db = MongoDatabase.Create(connectionString);
+            var client = new MongoClient(connectionString);
+            var server = client.GetServer();
+            var databaseName = connectionString.Substring(connectionString.LastIndexOf('/'));
+            var db = server.GetDatabase(databaseName);
 
             if (db.CollectionExists(name))
             {
@@ -410,7 +402,6 @@ namespace test_mongo_queue
             }
         }
     }
-
 
 
     public class TestMessage

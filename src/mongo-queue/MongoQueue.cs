@@ -25,8 +25,14 @@ namespace monQue
 
         public MongoQueue(MongoQueConfig config)
         {
-            // our queue name will be the same as the message class
-            _database = MongoDatabase.Create(config.ConnectionString);
+            var client = new MongoClient(config.ConnectionString);
+            var server = client.GetServer();
+
+            if (!server.DatabaseExists(config.ConnectionString))
+            {
+                // our queue name will be the same as the message class
+                _database = server.GetDatabase(config.Database);
+            }
 
             if (!_database.CollectionExists(_queueName))
             {
