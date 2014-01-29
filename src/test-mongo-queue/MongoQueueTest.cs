@@ -393,7 +393,7 @@ namespace test_mongo_queue
             var connectionString = ConfigurationManager.ConnectionStrings["mongo-queue"].ConnectionString;
             var client = new MongoClient(connectionString);
             var server = client.GetServer();
-            var databaseName = (string)ConfigurationManager.AppSettings["queue-name"];
+            var databaseName = connectionString.Substring(connectionString.LastIndexOf('/'));
             var db = server.GetDatabase(databaseName);
 
             if (db.CollectionExists(name))

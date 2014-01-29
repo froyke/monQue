@@ -63,11 +63,12 @@ namespace monQue
             try
             {
                 ConnectionString = ConfigurationManager.ConnectionStrings["mongo-queue"].ConnectionString;
-                Database = (string)ConfigurationManager.AppSettings["queue-name"];
+                Database = ConnectionString.Substring(ConnectionString.LastIndexOf('/'));
             }
             catch
             {
                 ConnectionString = "mongodb://localhost/monQue";
+                Database = "monQue";
             }
             try
             {
